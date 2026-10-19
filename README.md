@@ -4,6 +4,12 @@
 
 โปรเจกต์นี้เป็น Node.js จึงไม่สามารถอัปโหลดเฉพาะไฟล์เข้าโฮสต์ PHP ทั่วไปแล้วเปิดใช้ได้โดยตรง ต้องเลือกโฮสติ้งที่รองรับ Node.js เช่น Render, Railway หรือ VPS
 
+### วิธีคลิกครั้งเดียว
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/kaethareyat-jpg/school-schedule)
+
+กดปุ่ม **Deploy to Render** ด้านบน แล้วตั้งชื่อเว็บเป็น `school-schedule` จากนั้นกด **Apply** หรือ **Create Web Service** ระบบจะสร้างลิงก์เว็บให้เอง
+
 ### วิธีง่ายที่สุด: Render
 
 1. สร้าง GitHub repository ใหม่ แล้วอัปโหลดโฟลเดอร์โปรเจกต์นี้ทั้งหมดขึ้น repository
