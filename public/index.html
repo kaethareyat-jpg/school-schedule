@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#146c5b" />
+  <title>ระบบจัดตารางสอนบุคลากร</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+  <style>.table-actions{white-space:nowrap}.danger-text{color:#b23b3b}.card-actions{display:flex;align-items:center;justify-content:space-between;gap:8px}</style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-mark">T</span><span>TeachFlow<small>ระบบจัดตารางสอน</small></span></div>
+      <nav class="main-nav" aria-label="เมนูหลัก">
+        <button class="nav-item active" data-view="dashboard"><span>▦</span>ภาพรวม</button>
+        <button class="nav-item" data-view="schedule"><span>▤</span>ตารางสอน</button>
+        <button class="nav-item" data-view="personnel"><span>◉</span>บุคลากร</button>
+        <button class="nav-item" data-view="subjects"><span>□</span>รายวิชา</button>
+        <button class="nav-item" data-view="rooms"><span>⌂</span>ห้องเรียน</button>
+        <button class="nav-item" data-view="auto"><span>✦</span>จัดตารางอัตโนมัติ</button>
+        <button class="nav-item" data-view="reports"><span>◫</span>รายงาน</button>
+      </nav>
+      <div class="sidebar-bottom"><button class="nav-item" data-view="settings"><span>⚙</span>ตั้งค่า</button><p>ปีการศึกษา 2569</p></div>
+    </aside>
+    <div class="page-wrap">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="menuToggle" aria-label="เปิดเมนู">☰</button>
+        <div><p class="eyebrow" id="pageEyebrow">โรงเรียนของคุณ</p><h1 id="pageTitle">ภาพรวมตารางสอน</h1></div>
+        <div class="top-actions"><button class="button ghost" id="shareBtn">คัดลอกลิงก์สำหรับมือถือ</button><button class="avatar" aria-label="ผู้ดูแลระบบ">ผ</button></div>
+      </header>
+      <main class="content">
+        <section class="view active" id="dashboardView">
+          <div class="welcome"><div><p class="eyebrow">วันจันทร์ที่ 21 กันยายน 2569</p><h2>สวัสดี, ผู้จัดตาราง</h2><p>ดูภาพรวมและจัดการตารางสอนของบุคลากรได้จากที่นี่</p></div><button class="button primary" data-go="schedule">+ เพิ่มคาบสอน</button></div>
+          <div class="metric-grid" id="metrics"></div>
+          <div class="dashboard-grid"><article class="panel"><div class="panel-head"><div><h3>ตารางสอนวันนี้</h3><p>คาบเรียนที่กำลังจะมาถึง</p></div><button class="text-button" data-go="schedule">ดูทั้งหมด</button></div><div id="todaySchedule" class="today-list"></div></article><article class="panel"><div class="panel-head"><div><h3>รายการที่ต้องตรวจสอบ</h3><p>ความขัดแย้งและข้อมูลที่ควรจัดการ</p></div></div><div id="conflictList" class="notice-list"></div></article></div>
+        </section>
+
+        <section class="view" id="scheduleView">
+          <div class="toolbar"><div class="filter-row"><label>แสดงตาราง<select id="teacherFilter"></select></label><label>มุมมอง<select id="viewMode"><option value="week">รายสัปดาห์</option><option value="day">รายวัน</option></select></label></div><div class="action-row"><button class="button ghost" id="printBtn">พิมพ์ตาราง</button><button class="button primary" id="addBlockBtn">+ เพิ่มคาบสอน</button></div></div>
+          <div class="schedule-layout"><aside class="lesson-pool panel"><div class="panel-head"><div><h3>บล็อกคาบสอน</h3><p id="poolCount">ลากไปวางในตารางได้</p></div></div><div id="lessonPool" class="pool-list"></div><p class="pool-help">ลากบล็อกไปยังช่องเวลาที่ต้องการ ระบบจะแจ้งเตือนทันทีหากครู ห้อง หรือชั้นเรียนซ้อนกัน</p></aside><div class="schedule-main"><div id="scheduleConflict" class="inline-alert hidden"></div><div id="timetable" class="timetable-card"></div></div></div>
+        </section>
+
+        <section class="view" id="personnelView"><div class="section-heading"><div><p class="eyebrow">ข้อมูลบุคลากร</p><h2>ครูและเจ้าหน้าที่</h2><p>จัดการภาระสอนและดูตารางรายบุคคล</p></div><button class="button primary" id="addPersonBtn">+ เพิ่มบุคลากร</button></div><div class="panel"><div class="table-toolbar"><input id="personSearch" type="search" placeholder="ค้นหาชื่อหรือกลุ่มสาระ" /><span id="personnelTotal"></span></div><div class="data-table-wrap"><table><thead><tr><th>บุคลากร</th><th>กลุ่มสาระ</th><th>คาบ/สัปดาห์</th><th>สถานะ</th><th></th></tr></thead><tbody id="personnelTable"></tbody></table></div></div></section>
+        <section class="view" id="subjectsView"><div class="section-heading"><div><p class="eyebrow">ข้อมูลพื้นฐาน</p><h2>รายวิชา</h2><p>กำหนดรายวิชาและจำนวนคาบที่ต้องสอน</p></div><button class="button primary" id="subjectQuickAdd">+ เพิ่มรายวิชา</button></div><div class="panel data-table-wrap"><table><thead><tr><th>รหัสวิชา</th><th>รายวิชา</th><th>กลุ่มสาระ</th><th>คาบ/สัปดาห์</th><th>ผู้สอน</th><th>จัดการ</th></tr></thead><tbody id="subjectTable"></tbody></table></div></section>
+        <section class="view" id="roomsView"><div class="section-heading"><div><p class="eyebrow">ข้อมูลพื้นฐาน</p><h2>ห้องเรียน</h2><p>ตรวจสอบการใช้งานห้องและความพร้อม</p></div><button class="button primary" id="addRoomBtn">+ เพิ่มห้อง</button></div><div id="roomCards" class="room-grid"></div></section>
+        <section class="view" id="autoView"><div class="auto-hero panel"><p class="eyebrow">ผู้ช่วยจัดตาราง</p><h2>ให้ระบบช่วยวางตารางสอน</h2><p>ระบบจะกระจายคาบเรียนโดยคำนึงถึงเวลาว่างของครู ห้องเรียน และชั้นเรียน พร้อมแจ้งรายการที่จัดไม่ได้</p><button class="button primary large" id="autoScheduleBtn">เริ่มจัดตารางอัตโนมัติ</button><div id="autoResult" class="auto-result hidden"></div></div></section>
+        <section class="view" id="reportsView"><div class="section-heading"><div><p class="eyebrow">สรุปข้อมูล</p><h2>รายงานตารางสอน</h2><p>เลือกตารางรายบุคคลเพื่อพิมพ์หรือบันทึกเป็น PDF</p></div></div><div id="reportCards" class="report-grid"></div></section>
+        <section class="view" id="settingsView"><div class="section-heading"><div><p class="eyebrow">การตั้งค่าระบบ</p><h2>ตั้งค่าตารางเรียน</h2><p>กำหนดจำนวนคาบเรียนและข้อมูลแสดงผลของโรงเรียน</p></div></div><div class="panel settings-form"><label>จำนวนคาบต่อวัน<input id="periodsPerDayInput" type="number" min="1" max="12" value="6" /></label><label>ชื่อโรงเรียน<input id="schoolNameInput" value="โรงเรียนของคุณ" /></label><button class="button primary" id="saveSettings">บันทึกการตั้งค่า</button></div></section>
+      </main>
+    </div>
+  </div>
+  <div class="modal-backdrop hidden" id="modalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><button class="modal-close" id="modalClose" aria-label="ปิด">×</button><p class="eyebrow">เพิ่มรายการใหม่</p><h2 id="modalTitle">เพิ่มคาบสอน</h2><form id="lessonForm" class="form-grid"><label>ชื่อครู<input name="teacherName" list="teacherOptions" required placeholder="เช่น ครูสมใจ ใจดี" /></label><datalist id="teacherOptions"></datalist><label>ชื่อวิชา<input name="lessonName" required placeholder="เช่น คณิตศาสตร์พื้นฐาน" /></label><label>ชั้น/ห้อง<input name="classGroup" required placeholder="เช่น ม.2/1" /></label><label>ห้องเรียน<input name="room" placeholder="เช่น 302" /></label><label>จำนวนคาบ/สัปดาห์<input name="periods" type="number" min="1" max="10" value="1" required /></label><div class="form-actions"><button type="button" class="button ghost" id="modalCancel">ยกเลิก</button><button class="button primary" type="submit">บันทึกบล็อกคาบสอน</button></div></form></section></div>
+  <div class="modal-backdrop hidden" id="personModalBackdrop"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="personModalTitle"><button class="modal-close" id="personModalClose" aria-label="ปิด">×</button><p class="eyebrow">ข้อมูลบุคลากร</p><h2 id="personModalTitle">เพิ่มบุคลากร</h2><form id="personForm" class="form-grid"><label>ชื่อ-นามสกุล<input name="name" required placeholder="เช่น ครูอรุณี สุขใจ" /></label><label>กลุ่มสาระ / หน้าที่<input name="group" required placeholder="เช่น คณิตศาสตร์" /></label><div class="form-actions"><button type="button" class="button ghost" id="personModalCancel">ยกเลิก</button><button class="button primary" type="submit">บันทึกข้อมูลบุคลากร</button></div></form></section></div>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script src="/form-app.js"></script>
+</body>
+</html>

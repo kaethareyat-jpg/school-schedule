@@ -1,0 +1,116 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model Teacher {
+  id            String             @id @default(cuid())
+  teacherCode   String             @unique
+  name          String
+  constraints   TeacherConstraint[]
+  assignments   SubjectAssignmentTeacher[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+}
+
+model Classroom {
+  id            String           @id @default(cuid())
+  classroomCode String           @unique
+  name          String
+  assignments   SubjectAssignment[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model Subject {
+  id            String           @id @default(cuid())
+  subjectCode   String           @unique
+  name          String
+  assignments   SubjectAssignment[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model ClassGroup {
+  id            String           @id @default(cuid())
+  groupCode     String           @unique
+  name          String
+  assignments   SubjectAssignment[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model TimeSlot {
+  id            String           @id @default(cuid())
+  day           DayOfWeek
+  period        Int
+  key           String           @unique
+  schedules     ScheduledEntry[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model TeacherConstraint {
+  id                String   @id @default(cuid())
+  teacherId         String
+  teacher           Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  unavailableSlots  String
+  maxPeriodsPerDay  Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model SubjectAssignment {
+  id            String                     @id @default(cuid())
+  subjectId     String
+  subject       Subject                    @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  classGroupId  String
+  classGroup    ClassGroup                 @relation(fields: [classGroupId], references: [id], onDelete: Cascade)
+  classroomId   String
+  classroom     Classroom                  @relation(fields: [classroomId], references: [id], onDelete: Cascade)
+  periodsPerWeek Int
+  teacherLinks  SubjectAssignmentTeacher[]
+  schedules     ScheduledEntry[]
+  createdAt     DateTime                   @default(now())
+  updatedAt     DateTime                   @updatedAt
+}
+
+model SubjectAssignmentTeacher {
+  id               String            @id @default(cuid())
+  assignmentId     String
+  assignment       SubjectAssignment  @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  teacherId        String
+  teacher          Teacher           @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@unique([assignmentId, teacherId])
+}
+
+model ScheduledEntry {
+  id               String            @id @default(cuid())
+  assignmentId     String
+  assignment       SubjectAssignment  @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  timeSlotId       String
+  timeSlot         TimeSlot          @relation(fields: [timeSlotId], references: [id], onDelete: Cascade)
+  day              DayOfWeek
+  period           Int
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@unique([assignmentId, timeSlotId])
+}
